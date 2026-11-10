@@ -1,0 +1,98 @@
+#!/usr/bin/env bash
+# recipes: a recipe box you run from the terminal.
+#
+#   recipes add MINUTES CATEGORY "NAME"   add a recipe
+#   recipes list [-q] [-c CATEGORY]       list your recipes, in columns
+#   recipes --help                        show the help page
+#   recipes --version                     show the version
+#
+# Each numbered comment below is a job for you. The messages are given exactly,
+# because the check compares them word for word. Work from job 1 down: the
+# script runs from the top, and the case at the bottom (job 7) picks the job.
+
+version="1.0.0"
+
+usage() {
+  cat <<EOF
+Usage: recipes COMMAND
+
+Commands:
+  add MINUTES CATEGORY "NAME"  add a recipe
+  list [-q] [-c CATEGORY]      list your recipes: -q for quick ones only,
+                               -c for one category only
+
+Options:
+  -h, --help                   show this help
+  --version                    show the version
+
+Example: recipes add 25 dinner "Taco Tuesday"
+Recipes are kept in ~/.local/share/recipes, settings in ~/.config/recipes.
+EOF
+}
+
+# die MESSAGE: prints "recipes: MESSAGE" on standard error and stops the
+# script with exit code 2, which means "you ran me wrong".
+die() {
+  echo "recipes: $*" >&2
+  exit 2
+}
+
+# 1. Where the recipes live. Set data_dir to the recipes folder inside
+#    $XDG_DATA_HOME, or inside $HOME/.local/share when XDG_DATA_HOME is empty,
+#    and data_file to recipes.txt in that folder. On the first run, make the
+#    folder and an empty recipes.txt.
+
+
+# 2. The settings file. Set config_file to the file named config in the
+#    recipes folder inside $XDG_CONFIG_HOME, or inside $HOME/.config when
+#    XDG_CONFIG_HOME is empty.
+#    On the first run, make the folder and write the file with these two lines:
+#      # Settings for recipes
+#      quick_minutes=30
+#    Then load it with source, so quick_minutes becomes a variable.
+
+
+# 3. Colors, only on a terminal. When standard output is a terminal and
+#    NO_COLOR is empty, set bold, green and reset with tput (bold, setaf 2 and
+#    sgr0). Otherwise set all three to empty text.
+
+
+# 4. recipes add MINUTES CATEGORY "NAME"
+#    - Not exactly three arguments: die with
+#      usage: recipes add MINUTES CATEGORY "NAME"
+#    - MINUTES isn't a whole number: die with
+#      minutes must be a whole number, such as 25
+#    - Otherwise add the line "MINUTES CATEGORY NAME" to the end of data_file,
+#      and print "Added NAME." in green.
+cmd_add() {
+  die "add isn't written yet. That's job 4: delete this line and write it."
+}
+
+cmd_list() {
+  # 5. The options, with getopts: -c CATEGORY keeps only that category, and -q
+  #    keeps only recipes of quick_minutes or less. They work in any order, or
+  #    joined (-qc dinner).
+  #    - An unknown option, such as -x: die with
+  #      there's no -x option. Try: recipes --help
+  #    - -c with no value: die with
+  #      -c needs a value, such as -c dinner
+
+
+  # 6. The list. When data_file is empty, print
+  #      Your recipe box is empty. Add one with: recipes add MINUTES CATEGORY "NAME"
+  #    and stop there with exit code 0. Otherwise print a header line in bold,
+  #    then one line for each recipe the options keep, in these columns:
+  #      printf '%-22s %7s  %s\n'   for NAME MINUTES CATEGORY
+  die "list isn't written yet. That's jobs 5 and 6: delete this line and write them."
+}
+
+# 7. The commands. add and list are done for you. Add:
+#    - --help or -h: print the help page (usage) and stop with exit code 0.
+#    - --version: print "recipes 1.0.0" (use $version), exit code 0.
+#    - nothing at all: print the help page on standard error, exit code 2.
+#    - any other word, such as cook: die with
+#      there's no cook command. Try: recipes --help
+case "$1" in
+  add) shift; cmd_add "$@" ;;
+  list) shift; cmd_list "$@" ;;
+esac
